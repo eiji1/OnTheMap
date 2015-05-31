@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Login View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="LoginViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -15,11 +16,66 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="UdacityImage" translatesAutoresizingMaskIntoConstraints="NO" id="T5E-6C-rni">
+                                <rect key="frame" x="16" y="28" width="568" height="560"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rFK-bo-HUD">
+                                <rect key="frame" x="141" y="383" width="319" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9QI-IL-2lW">
+                                <rect key="frame" x="141" y="512" width="319" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleColor" red="0.1898564878" green="0.1898564878" blue="0.1898564878" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="onLoginButtonPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="bHx-u4-l08"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AqB-Gm-Q5N">
+                                <rect key="frame" x="141" y="447" width="319" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="9QI-IL-2lW" secondAttribute="trailing" constant="40" id="06B-gN-A2c"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="AqB-Gm-Q5N" secondAttribute="bottom" constant="120" id="B5i-oc-eFZ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="AqB-Gm-Q5N" secondAttribute="trailing" constant="40" id="COz-tR-q8l"/>
+                            <constraint firstItem="T5E-6C-rni" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="topMargin" id="CPd-nx-Mcs"/>
+                            <constraint firstItem="9QI-IL-2lW" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="40" id="Edd-0c-Ldo"/>
+                            <constraint firstAttribute="centerY" secondItem="T5E-6C-rni" secondAttribute="centerY" id="FrU-3D-4h7"/>
+                            <constraint firstAttribute="centerX" secondItem="T5E-6C-rni" secondAttribute="centerX" constant="-0.5" id="GdH-Nv-h2m"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="T5E-6C-rni" secondAttribute="trailing" id="KI7-0C-5U7"/>
+                            <constraint firstItem="rFK-bo-HUD" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="40" id="RgI-Tq-zaI"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="rFK-bo-HUD" secondAttribute="bottom" constant="200" id="Saa-Nu-3Hm"/>
+                            <constraint firstItem="AqB-Gm-Q5N" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="40" id="ZcM-y1-kgo"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="9QI-IL-2lW" secondAttribute="bottom" constant="40" id="dF5-eI-j3R"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="T5E-6C-rni" secondAttribute="bottom" id="mea-z4-CjU"/>
+                            <constraint firstItem="T5E-6C-rni" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="wEB-C7-2Rh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="rFK-bo-HUD" secondAttribute="trailing" constant="40" id="xbz-Wy-7eC"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="passwordTextField" destination="AqB-Gm-Q5N" id="d1F-Z5-CWB"/>
+                        <outlet property="usernameTextField" destination="rFK-bo-HUD" id="udF-ZQ-XGL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="UdacityImage" id="QcC-PO-udv">
+                    <rect key="frame" x="0.0" y="0.0" width="533" height="525"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
             </objects>
+            <point key="canvasLocation" x="333" y="313"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="UdacityImage" width="1536" height="2048"/>
+    </resources>
 </document>
