@@ -3,7 +3,7 @@
 //  OnTheMap
 //
 //  Created by eiji on 2015/06/01.
-//  Copyright (c) 2015 Udacity. All rights reserved.
+//  Copyright (c) 2015 eiji & Udacity. All rights reserved.
 //
 
 import UIKit
@@ -21,7 +21,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 	
 	private let defaultUsername = "ENTER USER NAME"
 	private let defaultPassword = "ENTER PASS WORD"
-	
+
 	// helper classes
 	private var sharedApp : AppDelegate!
 	private var keyboard: KeyboardController!

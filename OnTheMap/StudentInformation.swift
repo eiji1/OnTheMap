@@ -3,7 +3,7 @@
 //  OnTheMap
 //
 //  Created by eiji on 2015/06/03.
-//  Copyright (c) 2015 Udacity. All rights reserved.
+//  Copyright (c) 2015 eiji & Udacity. All rights reserved.
 //
 
 import Foundation
