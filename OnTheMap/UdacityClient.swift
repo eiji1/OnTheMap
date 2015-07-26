@@ -8,21 +8,62 @@
 
 import UIKit
 
-class UdacityClient {
+/**
+Udacity Client class manages accessing Udacity web APIs and controls what to do on the completion.
+
+*/
+final class UdacityClient {
 
 	// current authentication state
-	var sessionId : String!
+	internal var sessionId : String!
+	internal var userId :WebClient.UniqueKey!
+	internal var facebookAccessToken: String!
 	
-	static let BaseSecuredUrl = "https://www.udacity.com/api/"
+	static let BaseSecuredUrl = "https://www.udacity.com/api"
+	static let JSONParseOffset = 5 // the first 5 letters should be skipped for parsing JSON object data.
 	
 	struct Methods {
-		static let RequestForSession = "session"
+		static let Session = "session"
+		static let User = "users"
 	}
 	
 	struct ParameterKeys {
+		// get session
 		static let Username = "username"
 		static let Password = "password"
 	}
+	
+	struct JSONBodyKeys {
+		static let Udacity = "udacity"
+		static let Username = "username"
+		static let Password = "password"
+		static let FacebookMobile = "facebook_mobile"
+		static let AccessToken = "access_token"
+	}
+	
+	struct JSONResponseKeys {
+		// get session
+		static let Account = "account"
+		static let Registerrd = "registered"
+		static let Key = "key"
+		
+		static let Session = "session"
+		static let Id = "id"
+		static let Expiration = "expiration"
+		
+		static let User = "user"
+		
+		// Getting public user data
+		static let LastName = "last_name"
+		static let FirstName = "first_name"
+		static let MainlingAddress = "mailing_address"
+		static let City = "city"
+		static let Country = "country"
+		static let WebsiteURL = "website_url"
+	}
+	
+	// make singleton
+	private init(){}
 	
 	class func sharedInstance() -> UdacityClient {
 		struct Singleton {
@@ -31,52 +72,145 @@ class UdacityClient {
 		return Singleton.instance
 	}
 	
+	/**
+	login Udacity and get a session and registered user id.
 	
-	func authenticate(hostViewController: UIViewController, parameters: [String: AnyObject], completionHandler: (success: Bool, errorString: String?) -> Void) {
+	:param: username
+	:param: passowrd password string
+	:param: completionHandler A handler on the completion
+	:returns: session id and user id in the completion handler
+	*/
+	func login(username: String, _ password: String, completionHandler: WebClient.CompletionHandler) {
+		let httpClient = WebClient()
+		// for all response, it needs to skip the first 5 characters of the response.
+		httpClient.startParsePos = UdacityClient.JSONParseOffset
 		
-		let username = parameters[ParameterKeys.Username] as? String
-		let password = parameters[ParameterKeys.Password] as? String
+		// prepare a URL
+		// sample url : https://www.udacity.com/api/session
+		let url = httpClient.createURL(UdacityClient.BaseSecuredUrl, method: UdacityClient.Methods.Session)
+
+		// prepare a request
+		let httpHeaderField = [
+			"application/json": "Accept"
+		]
+		let request = httpClient.createRequest(url, method: WebClient.Method.POST, parameters: httpHeaderField)
 		
-		let urlString = UdacityClient.BaseSecuredUrl + UdacityClient.Methods.RequestForSession
-		let url = NSURL(string: urlString)
-		println(urlString)
-		
-		let request = NSMutableURLRequest(URL: url!)
-		request.HTTPMethod = "POST"
-		request.addValue("application/json", forHTTPHeaderField: "Accept")
-		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-		request.HTTPBody = "{\"udacity\": {\"username\": \"\(username)\", \"password\":\"\(password)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
-		
-		let session = NSURLSession.sharedSession()
-		let task = session.dataTaskWithRequest(request) { data, response, error in
-			if error != nil { // Handle error...
-			return
+		let httpBody = [
+			JSONBodyKeys.Udacity: [
+				JSONBodyKeys.Username: username,
+				JSONBodyKeys.Password: password
+			]
+		]
+
+		// send a request to Udacity server
+		httpClient.sendRequest(request, jsonBody: httpBody) { (result, success, downloadError) -> Void in
+			if !success {
+				completionHandler(success: false, error: downloadError)
+				return
 			}
-			let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
-			println(NSString(data: newData, encoding: NSUTF8StringEncoding))
-			/*
-			{"account":
-			{"registered": true, "key": "618989053"},
-			"session": {"id": "1464634266S5bd8e6ff7d2024f0fc66c30294c70f63", "expiration", "2015-07-30T18:51:06.660980Z"}
+			println(result)
+
+			// session id
+			var gotSessionId = false
+			if let session = result?.valueForKey(JSONResponseKeys.Session) as? WebClient.JSONBody {
+				if let sessionId = session[JSONResponseKeys.Id] as? String {
+					self.sessionId = sessionId
+					gotSessionId = true
+				}
 			}
-			*/
-			var parsingError: NSError? = nil
-			
-			let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
-			
-			if let error = parsingError {
-				//completionHandler(result: nil, error: error)
+			// user id
+			var gotUserId = false
+			if let account = result?.valueForKey(JSONResponseKeys.Account) as? WebClient.JSONBody {
+				if let key = account[JSONResponseKeys.Key] as? String {
+					self.userId = key
+					gotUserId = true
+				}
+			}
+			// on completion
+			if gotSessionId && gotUserId {
+				completionHandler(success: true, error: nil)
 			} else {
-				//completionHandler(result: parsedResult, error: nil)
-				if let session = parsedResult?.valueForKey("session") as? [String: AnyObject] {
-				if let sessionId = session["id"] as? String {
-				println(sessionId)
-				UdacityClient.sharedInstance().sessionId = sessionId
-				}
-				}
+				completionHandler(success: false, error: CustomError.getError(CustomError.Code.JSONParseError))
 			}
 		}
-		task.resume()
 	}
 	
+	/**
+	logout Udacity
+	
+	:param: completionHandler A handler on the completion
+	:returns: session id in the completion handler
+	*/
+	func logout(completionHandler: WebClient.CompletionHandlerWithResultString) {
+		let httpClient = WebClient()
+		httpClient.startParsePos = UdacityClient.JSONParseOffset
+		
+		// sample url : https://www.udacity.com/api/session
+		let url = httpClient.createURL(UdacityClient.BaseSecuredUrl, method: UdacityClient.Methods.Session)
+
+		var httpHeaderField = WebClient.JSONBody()
+		
+		// prepare for http header field for delete method
+		var xsrfCookie: NSHTTPCookie? = nil
+		let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+		for cookie in sharedCookieStorage.cookies as! [NSHTTPCookie] {
+			if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+		}
+		if let xsrfCookie = xsrfCookie {
+			httpHeaderField[xsrfCookie.value!] = "X-XSRF-Token"
+		}
+
+		let request = httpClient.createRequest(url, method: WebClient.Method.DELETE, parameters: httpHeaderField)
+		
+		httpClient.sendRequest(request, jsonBody: nil) { (result, success, downloadError) -> Void in
+			if !success {
+				completionHandler(resultString: nil, success: false, error: downloadError)
+				return
+			}
+			// parse session id
+			if let session = result?.valueForKey(JSONResponseKeys.Session) as? WebClient.JSONBody {
+				if let sessionId = session[JSONResponseKeys.Id] as? String {
+					completionHandler(resultString: sessionId, success: true, error: nil)
+				}
+			} else {
+				completionHandler(resultString: nil, success: false, error: CustomError.getError(CustomError.Code.JSONParseError))
+			}
+		}
+	}
+	
+	/**
+	Get registered user data in detail from Udacity and return it as a StudentInformation object.
+	
+	:param: completionHandler A handler on the completion which gives the result
+	:returns: StudentInformation object including user data (such as firstname, lastname, address string, and media URL) in the completion handler
+	*/
+	func getPublicUserData(completionHandler: (result: StudentInformation?, error: NSError?) -> Void) {
+		let httpClient = WebClient()
+		httpClient.startParsePos = UdacityClient.JSONParseOffset
+		
+		// sample url: https://www.udacity.com/api/users/00000000
+		let url = httpClient.createURL(UdacityClient.BaseSecuredUrl, method: UdacityClient.Methods.User + "/\(self.userId)")
+		
+		let httpHeaderField = [
+			"application/json": "Accept"
+		]
+		let request = httpClient.createRequest(url, method: WebClient.Method.GET, parameters: httpHeaderField)
+		
+		httpClient.sendRequest(request, jsonBody: nil) { (result, success, downloadError) -> Void in
+			if !success {
+				completionHandler(result: nil, error: downloadError)
+				return
+			}
+			// user data
+			var gotSessionId = false
+			if let userData = result?.valueForKey(JSONResponseKeys.User) as? WebClient.JSONBody {
+				println(userData)
+				var student = StudentInformation(dictionary: userData)
+				println(student)
+				completionHandler(result: student, error: nil)
+			} else {
+				completionHandler(result: nil, error: CustomError.getError(CustomError.Code.JSONParseError))
+			}
+		}
+	}
 }

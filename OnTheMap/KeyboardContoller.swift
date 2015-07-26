@@ -9,17 +9,27 @@
 import Foundation
 import UIKit
 
-class KeyboardController : NSObject {
+
+final class KeyboardController : NSObject {
 	
-	var tapRecognizer: UITapGestureRecognizer? = nil
+	// helper classes
+	private var tapRecognizer: UITapGestureRecognizer? = nil
 	
-	var view: UIView!
+	// target views
+	private var shouldSlideUpView = true
+	private var targetView: UIView!
+	private var isSlidedUp = false
+	private var defaultPos: CGFloat = 0
 	
-	init(view: UIView) {
+	init(targetView: UIView, slideTargetView: Bool = true) {
 		super.init()
-		self.view = view
+		self.targetView = targetView
+		self.shouldSlideUpView = slideTargetView
+		self.defaultPos = self.targetView.frame.origin.y
+		
 		tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
 		tapRecognizer?.numberOfTapsRequired = 1
+		
 	}
 	
 	func prepareToAppear() {
@@ -33,38 +43,48 @@ class KeyboardController : NSObject {
 	}
 	
 	func handleSingleTap(recognizer: UITapGestureRecognizer) {
-		println("End editing here")
-		self.view.endEditing(true)
-		
+		self.targetView.endEditing(true)
 	}
 	
-	func addKeyboardDismissRecognizer() {
-		self.view.addGestureRecognizer(tapRecognizer!)
+	private func addKeyboardDismissRecognizer() {
+		self.targetView.addGestureRecognizer(tapRecognizer!)
 	}
 	
-	func removeKeyboardDismissRecognizer() {
-		self.view.removeGestureRecognizer(tapRecognizer!)
+	private func removeKeyboardDismissRecognizer() {
+		self.targetView.removeGestureRecognizer(tapRecognizer!)
 	}
 	
-	func subscribeToKeyboardNotifications() {
+	private func subscribeToKeyboardNotifications() {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
 	}
 	
-	func unsubscribeToKeyboardNotifications() {
+	private func unsubscribeToKeyboardNotifications() {
 		NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
 		NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
 	}
 	
 	func keyboardWillShow(notification: NSNotification) {
-		self.view.frame.origin.y -= getKeyboardHeight(notification)
+		if !shouldSlideUpView {
+			return
+		}
+		if !isSlidedUp { // to avoid sliding up twice
+			self.targetView.frame.origin.y -= getKeyboardHeight(notification)
+			isSlidedUp = !isSlidedUp
+		}
 	}
 	
 	func keyboardWillHide(notification: NSNotification) {
-		self.view.frame.origin.y += getKeyboardHeight(notification)
+		if !shouldSlideUpView {
+			return
+		}
+		if isSlidedUp {
+			self.targetView.frame.origin.y = self.defaultPos
+			isSlidedUp = !isSlidedUp
+		}
 	}
 	
-	func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+	private func getKeyboardHeight(notification: NSNotification) -> CGFloat {
 		let userInfo = notification.userInfo
 		let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
 		return keyboardSize.CGRectValue().height

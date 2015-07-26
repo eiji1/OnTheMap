@@ -13,7 +13,199 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 
+	// models
+	var userData: StudentInformation?  // stored udacity user data
+	var students = StudentInformationArray() // stored student information as array in the model class
 
+	// common features are implemented here
+
+	/* legacy code
+	func updateStudentLocations(target: UIViewController?, handler: ([StudentInformation]?, Bool) -> Void ) {
+		println("update student locations.")
+		let limits = ParseClient.LimitPerRequest
+		let skip = 0
+		ParseClient.sharedInstance().getStudentLocations(limit: limits, skip: skip) { result, success, downloadError in
+			if let students = result {
+				self.students.array = students
+				handler(self.students.array, true)
+			} else {
+				self.showNetworkErrorMessage(target, downloadError: downloadError)
+				handler(nil, false)
+			}
+		}
+	}
+	*/
+	
+	/**
+	Update shared student information (locations) from specified view controller.
+	
+	:param: target Target view controller where completion handler should be executed
+	:param: handler completion handler
+	:returns: none
+	*/
+	func updateStudentLocations(target: UIViewController?, handler: () -> () ) {
+		let indicator = createIndicator(targetView: target!.view)
+		indicator.startAnimating()
+		updateStudentLocationsWithMultipleRequests(target) { result, success in
+			self.dispatch_async_main {
+				indicator.stopAnimating()
+			}
+			if success {
+				handler()
+			}
+		}
+	}
+	
+	/**
+	Update specified number of student information (locations) from multiple requests to the Parse API server.
+	
+	:param: target Target view controller where error message should be displayed
+	:param: handler completion handler
+	:returns: none
+	*/
+	func updateStudentLocationsWithMultipleRequests(target: UIViewController?, handler: ([StudentInformation]?, Bool) -> Void ) {
+		println("update student locations.")
+		
+		let limits = ParseClient.LimitPerRequest * 2 // more than the most recent 100 locations
+		let skip = 0
+		self.students.reset()
+		
+		updateStudentLocationsRecursively(limit: limits, skip: skip, trial: 0) { result, success, downloadError in
+			if let students = result {
+				handler(self.students.array, true)
+			} else {
+				self.dispatch_async_main {
+					self.showNetworkErrorMessage(target, downloadError: downloadError)
+				}
+				handler(nil, false)
+			}
+		}
+	}
+	
+	private static let maxHTTPRequestTrials = 10
+	
+	internal func updateStudentLocationsRecursively(#limit: Int, skip: Int, trial: Int, handler: ([StudentInformation]?, Bool, NSError?) -> Void ) {
+		let limitPerRequest = ParseClient.LimitPerRequest
+		
+		if limit <= 0 || // every student information has been obtained
+			limitPerRequest <= 0 || // error: not increasing limits per loop
+			trial >= AppDelegate.maxHTTPRequestTrials // avoid infinite loop
+		{
+			handler(self.students.array, true, nil)
+			return
+		}
+		
+		let actualLimit = limit < limitPerRequest ? limit : limitPerRequest
+		ParseClient.sharedInstance().getStudentLocations(limit: actualLimit, skip: skip) { result, success, downloadError in
+			if let error = downloadError {
+				handler(nil, false, error)
+			} else {
+				if let newStudents = result {
+					self.students.append(newStudents) // update student information list
+					self.dispatch_async_globally {
+						self.updateStudentLocationsRecursively(limit: limit-limitPerRequest, skip: skip+limitPerRequest, trial: trial+1, handler: handler)
+					}
+				} else { // server error
+					handler(nil, false, CustomError.getError(CustomError.Code.ServerError))
+				}
+			}
+		}
+	}
+	
+	// alert messages
+	
+	/**
+	Show an error message about network connection and server status.
+	
+	:param: target Target view controller where error message should be displayed
+	:param: downloadError The download error for the last attempt.
+	:returns: none
+	*/
+	func showNetworkErrorMessage(target: UIViewController?, downloadError: NSError?) {
+		if let error = downloadError {
+			if WebClient.isTimeout(error) {
+				self.showAlertMessage(target, message: "network connection timeout. lack of network connectivity.")
+			} else {
+				self.showAlertMessage(target, message: "server response error")
+			}
+		}
+	}
+	
+	/**
+	Show an alert message with an OK button
+	
+	:param: target Target view controller where alert message should be displayed
+	:param: message An alert message
+	:returns: Created alert view object
+	*/
+	func showAlertMessage(target: UIViewController?, message: String) -> UIView {
+		var alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+		let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
+		alert.addAction(okAction)
+		
+		target?.presentViewController(alert, animated: true, completion: nil)
+		return alert.view
+	}
+	
+	/**
+	Show an alert message with OK and Cancel buttons
+	
+	:param: target Target view controller where alert message should be displayed
+	:param: message An alert message
+	:param: handler The action called on OK button selected
+	:returns: Created alert view object
+	*/
+	func showSelectMessage(target: UIViewController?, message: String, handler:((UIAlertAction!) -> Void)!) -> UIView {
+		var alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+		let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: handler)
+		let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+		alert.addAction(okAction)
+		alert.addAction(cancelAction)
+		
+		target?.presentViewController(alert, animated: true, completion: nil)
+		return alert.view
+	}
+	
+	// indicators
+	
+	/**
+	Create an indicator shown while network connection.
+	
+	:param: targetView A generated indicator will be displayed on this target view
+	:returns: created indicator object
+	*/
+	func createIndicator(targetView view: UIView) -> UIActivityIndicatorView {
+		let indicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+		indicator.frame = CGRectMake(0.0, 0.0, 80.0, 80.0);
+		indicator.center = view.center;
+		view.addSubview(indicator)
+		indicator.bringSubviewToFront(view)
+		UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+		return indicator
+	}
+	
+	// async dispatching
+	
+	/**
+	Submit functional block to be asynchronously executed on the global queue
+	
+	:param: handler target handler function which should be executed asynchronously
+	:returns: none
+	*/
+	func dispatch_async_globally(handler: () -> ()) {
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), handler)
+	}
+	
+	/**
+	Submit functional block to be asynchronously executed on the main thread
+	
+	:param: handler target handler which should be executed asynchronously
+	:returns: none
+	*/
+	func dispatch_async_main(handler: () -> ()) {
+		dispatch_async(dispatch_get_main_queue(),handler);
+	}
+	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
 		return true
