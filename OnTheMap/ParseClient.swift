@@ -7,8 +7,9 @@
 //
 
 import UIKit
+
 /**
-Parse Client class offers getting and posting student information through Parse APIs.
+Parse Client class offers the functions getting and posting student information to the server through the Parse APIs.
 
 */
 final class ParseClient {

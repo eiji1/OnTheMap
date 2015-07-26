@@ -9,7 +9,9 @@
 import Foundation
 import UIKit
 
-
+/**
+KeyboardController is a helper class defining the keyboard behaviors.
+*/
 final class KeyboardController : NSObject {
 	
 	// helper classes

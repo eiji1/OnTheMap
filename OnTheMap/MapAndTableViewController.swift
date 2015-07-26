@@ -9,7 +9,7 @@
 import UIKit
 
 /* 
-MapAndTableTabViewController manages the additional tab with other representations of the data. This view contains the map and the list of students' names. If a student's name is tapped in the list, the map show the student's location automatically.
+MapAndTableTabViewController manages the additional tab with other representations of the locations. This view contains a map and a list of students' names. If a student's name is tapped in the list, the map show the student's location automatically.
 */
 final class MapAndTableTabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, Updatable {
 	

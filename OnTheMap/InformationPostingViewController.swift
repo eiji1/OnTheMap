@@ -10,6 +10,9 @@ import UIKit
 import MapKit
 import CoreLocation
 
+/**
+InformationPostingViewController class defines some operations to post a user's location to the server and it defines some methods to parepare the student information such as geocoding address strings, input the user's URL, and showing user's location on the map.
+*/
 final class InformationPostingViewController: UIViewController, UITextFieldDelegate {
 	
 	private var sharedApp: AppDelegate!

@@ -10,8 +10,7 @@ import UIKit
 import Foundation
 
 /**
-MapViewController controls the first tab view showing a map on the whole screen. 
-
+MapViewController controls the first tab view showing a lot of student locations on the map at the same time.
 */
 final class MapViewController: UIViewController, Updatable{
 	

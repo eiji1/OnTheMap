@@ -9,8 +9,7 @@
 import UIKit
 
 /**
-LoginViewController class controls the behavior on login Udacity and the transition to the Student Locations Tabbed View.
-
+LoginViewController controls a behavior on login Udacity and how this application starts at first.
 */
 final class LoginViewController: UIViewController, UITextFieldDelegate {
 	
@@ -19,8 +18,8 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 	@IBOutlet weak var passwordTextField: UITextField!
 	@IBOutlet weak var imageView: UIImageView!
 	
-	private let defaultUsername = "ENTER USER NAME"
-	private let defaultPassword = "ENTER PASS WORD"
+	private let defaultUsername = "ENTER_USER_NAME"
+	private let defaultPassword = "ENTER_PASSWORD"
 
 	// helper classes
 	private var sharedApp : AppDelegate!

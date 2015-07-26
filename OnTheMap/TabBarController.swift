@@ -8,12 +8,16 @@
 
 import UIKit
 
-class TabBarController:UITabBarController {
+/**
+TabBarController class creates custom tab bar items with
+programmably created icons and titles.
+*/
+final class TabBarController:UITabBarController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// setup customized tabbar
+		// setup customized tabbar items
 		let viewControllers = self.viewControllers as! [UIViewController]
 		let mapIcon = UIImage(named: "map")
 		viewControllers[0].tabBarItem = UITabBarItem(title: "Map", image: mapIcon, selectedImage: mapIcon)

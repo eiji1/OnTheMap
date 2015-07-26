@@ -9,7 +9,7 @@
 import Foundation
 
 /**
- WebClient class manages sending HTTP requests and parsing JSON data in the responses.
+ WebClient class manages sending HTTP requests and parsing JSON data stored in the responses.
 
 */
 final class WebClient : NSObject{

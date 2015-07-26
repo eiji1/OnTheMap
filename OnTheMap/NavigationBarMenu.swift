@@ -8,6 +8,9 @@
 
 import UIKit
 
+/**
+Each tab view has the common navigation menu. NavigationBarMenu provides the operations from the menu.
+*/
 final class NavigationBarMenu: UIViewController{
 	private var targetViewController: UIViewController!
 	private var delegate: Updatable?

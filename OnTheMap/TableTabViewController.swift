@@ -9,8 +9,7 @@
 import UIKit
 
 /**
-TableTabViewController controls the second tab in tabbed views, which lists students' URLs.
-
+TableTabViewController controls the second tab in the tabbed views listing students' URLs and opening a selected URL.
 */
 final class TableTabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, Updatable {
 	

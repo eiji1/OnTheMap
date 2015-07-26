@@ -9,7 +9,7 @@
 import UIKit
 
 /**
-Udacity Client class manages accessing Udacity web APIs and controls what to do on the completion.
+Udacity Client class manages accessing Udacity web APIs and it returns the user's account information on the completion.
 
 */
 final class UdacityClient {
@@ -17,7 +17,6 @@ final class UdacityClient {
 	// current authentication state
 	internal var sessionId : String!
 	internal var userId :WebClient.UniqueKey!
-	internal var facebookAccessToken: String!
 	
 	static let BaseSecuredUrl = "https://www.udacity.com/api"
 	static let JSONParseOffset = 5 // the first 5 letters should be skipped for parsing JSON object data.
