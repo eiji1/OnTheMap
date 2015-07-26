@@ -91,7 +91,7 @@ final class UdacityClient {
 
 		// prepare a request
 		let httpHeaderField = [
-			"application/json": "Accept"
+			"Accept": "application/json"
 		]
 		let request = httpClient.createRequest(url, method: WebClient.Method.POST, parameters: httpHeaderField)
 		
@@ -157,7 +157,7 @@ final class UdacityClient {
 			if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
 		}
 		if let xsrfCookie = xsrfCookie {
-			httpHeaderField[xsrfCookie.value!] = "X-XSRF-Token"
+			httpHeaderField["X-XSRF-Token"] = xsrfCookie.value!
 		}
 
 		let request = httpClient.createRequest(url, method: WebClient.Method.DELETE, parameters: httpHeaderField)
@@ -192,7 +192,7 @@ final class UdacityClient {
 		let url = httpClient.createURL(UdacityClient.BaseSecuredUrl, method: UdacityClient.Methods.User + "/\(self.userId)")
 		
 		let httpHeaderField = [
-			"application/json": "Accept"
+			"Accept": "application/json"
 		]
 		let request = httpClient.createRequest(url, method: WebClient.Method.GET, parameters: httpHeaderField)
 		

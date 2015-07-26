@@ -98,11 +98,11 @@ final class WebClient : NSObject{
 		let request = NSMutableURLRequest(URL: url)
 		request.HTTPMethod = method
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-		if let paramList = parameters {
-			for (key, value) in paramList {
+		if let httpHeaderFields = parameters {
+			for (key, value) in httpHeaderFields {
 				println(key)
 				println(value)
-				request.addValue(key, forHTTPHeaderField: value as! String)
+				request.addValue(value as? String, forHTTPHeaderField: key)
 			}
 		}
 		// set timeout interval

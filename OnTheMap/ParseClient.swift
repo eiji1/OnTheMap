@@ -84,10 +84,10 @@ final class ParseClient {
 		
 		// sample url: https://api.parse.com/1/classes/StudentLocation?limit=100
 		let url = httpClient.createURL(ParseClient.BaseSecuredUrl, method: nil, parameters: mutableParameters)
-
+		
 		let httpHeaderField = [
-			ParseClient.ApplicationId: "X-Parse-Application-Id",
-			ParseClient.APIKey: "X-Parse-REST-API-Key"
+			"X-Parse-Application-Id": ParseClient.ApplicationId,
+			"X-Parse-REST-API-Key": ParseClient.APIKey
 		]
 		
 		let request = httpClient.createRequest(url, method: WebClient.Method.GET, parameters: httpHeaderField)
@@ -131,8 +131,8 @@ final class ParseClient {
 		let url = httpClient.createURL(ParseClient.BaseSecuredUrl, method: nil, parameters: nil)
 		
 		let httpHeaderField = [
-			ParseClient.ApplicationId: "X-Parse-Application-Id",
-			ParseClient.APIKey: "X-Parse-REST-API-Key"
+			"X-Parse-Application-Id": ParseClient.ApplicationId,
+			"X-Parse-REST-API-Key": ParseClient.APIKey
 		]
 		
 		let request = httpClient.createRequest(url, method: WebClient.Method.POST, parameters: httpHeaderField)
@@ -215,8 +215,8 @@ final class ParseClient {
 		let url = httpClient.createURL(ParseClient.BaseSecuredUrl, method: nil, parameters: mutableParameters)
 		
 		let httpHeaderField = [
-			ParseClient.ApplicationId: "X-Parse-Application-Id",
-			ParseClient.APIKey: "X-Parse-REST-API-Key"
+			"X-Parse-Application-Id": ParseClient.ApplicationId,
+			"X-Parse-REST-API-Key": ParseClient.APIKey
 		]
 		
 		let request = httpClient.createRequest(url, method: WebClient.Method.GET, parameters: httpHeaderField)
@@ -276,8 +276,8 @@ final class ParseClient {
 		let url = httpClient.createURL(ParseClient.BaseSecuredUrl, method: student.objectId, parameters: nil)
 		
 		let httpHeaderField = [
-			ParseClient.ApplicationId: "X-Parse-Application-Id",
-			ParseClient.APIKey: "X-Parse-REST-API-Key"
+			"X-Parse-Application-Id": ParseClient.ApplicationId,
+			"X-Parse-REST-API-Key": ParseClient.APIKey
 		]
 		
 		let request = httpClient.createRequest(url, method: WebClient.Method.PUT, parameters: httpHeaderField)
