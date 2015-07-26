@@ -16,25 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// models
 	var userData: StudentInformation?  // stored udacity user data
 	var students = StudentInformationArray() // stored student information as array in the model class
-
-	// common features are implemented here
-
-	/* legacy code
-	func updateStudentLocations(target: UIViewController?, handler: ([StudentInformation]?, Bool) -> Void ) {
-		println("update student locations.")
-		let limits = ParseClient.LimitPerRequest
-		let skip = 0
-		ParseClient.sharedInstance().getStudentLocations(limit: limits, skip: skip) { result, success, downloadError in
-			if let students = result {
-				self.students.array = students
-				handler(self.students.array, true)
-			} else {
-				self.showNetworkErrorMessage(target, downloadError: downloadError)
-				handler(nil, false)
-			}
-		}
-	}
-	*/
 	
 	/**
 	Update shared student information (locations) from specified view controller.
