@@ -53,6 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		updateStudentLocationsRecursively(limit: limits, skip: skip, trial: 0) { result, success, downloadError in
 			if let students = result {
+				self.students.sortByDate()
 				handler(self.students.array, true)
 			} else {
 				self.dispatch_async_main {

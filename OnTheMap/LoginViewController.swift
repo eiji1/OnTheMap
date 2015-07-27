@@ -108,7 +108,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 			if !success {
 				self.sharedApp.dispatch_async_main {
 					self.indicator.stopAnimating()
-					self.onLoginFailed()
+					self.onLoginFailed(downloadError)
 				}
 			}
 			else {
@@ -139,14 +139,26 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 			} else {
 				println("getting student data failed")
 				self.sharedApp.dispatch_async_main {
-					self.onLoginFailed()
+					self.onLoginFailed(error)
 				}
 			}
 		}
 	}
 	
-	private func onLoginFailed() {
-		let alertView = self.sharedApp.showSelectMessage(self, message: "login failed. are you sure to retry") { OkAction in
+	private func onLoginFailed(downloadError: NSError?) {
+		
+		// differentiates error messages between connection error and invalid user account
+		var errorMessage = "login failed: "
+		if let error = downloadError {
+			if WebClient.isTimeout(error) {
+				errorMessage += "unreachable network connection."
+			} else {
+				errorMessage += "invalid username or password."
+			}
+		}
+		errorMessage += "\nare you sure to retry?"
+		
+		let alertView = self.sharedApp.showSelectMessage(self, message: errorMessage) { OkAction in
 			// offer an interface to retry login request
 			self.sharedApp.dispatch_async_globally {
 				self.signinUdacity()

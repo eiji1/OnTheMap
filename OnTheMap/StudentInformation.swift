@@ -32,6 +32,7 @@ public struct StudentInformation : Printable {
 	var mediaURL: String = ""
 	var mapString: String = ""
 	var coordinates = CLLocationCoordinate2D(latitude: 0,longitude: 0)
+	var updatedDate: String = ""
 	var objectId: String!
 
 	public init(dictionary: [String : AnyObject]) {
@@ -52,7 +53,8 @@ public struct StudentInformation : Printable {
 		lastName = (lastName == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.LastName) : lastName
 		mediaURL = (mediaURL == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.MediaURL) : mediaURL
 		mapString = (mapString == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.MapString) : mapString
-
+		updatedDate = (updatedDate == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.UpdatedAt) : updatedDate
+		
 		// check keys only in Parse APIs
 		objectId = getValue(dictionary, ParseClient.JSONResponseKeys.ObjectId)
 		if let latitude = dictionary[ParseClient.JSONResponseKeys.Latitude] as? Double {
@@ -86,7 +88,8 @@ public struct StudentInformation : Printable {
 		var str = "\(firstName) \(lastName), "
 		str += "\(mediaURL), "
 		str += "\(mapString), "
-		str += "\(coordinates.latitude), \(coordinates.longitude)"
+		str += "\(coordinates.latitude), \(coordinates.longitude), "
+		str += "\(updatedDate)"
 		if objectId != nil {
 			str += ", objectId: \(objectId)"
 		}
@@ -179,6 +182,10 @@ final class StudentInformationArray {
 	func getIndex(objectId: String?) -> Int? {
 		let foundIndex = [Int](0..<array_.count).filter({self.array_[$0].objectId == objectId}).first
 		return foundIndex
+	}
+	
+	func sortByDate() {
+		array_.sort { (lhs, rhs) in return lhs.updatedDate > rhs.updatedDate }
 	}
 }
 
