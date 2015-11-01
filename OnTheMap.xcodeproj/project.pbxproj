@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE2834131B668BCB00A54467 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2834121B668BCB00A54467 /* WebViewController.swift */; };
 		CE2A48CC1B1E622400438A27 /* ParseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A48CB1B1E622400438A27 /* ParseClient.swift */; };
 		CE2A48CE1B1E6EFB00438A27 /* WebClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A48CD1B1E6EFB00438A27 /* WebClient.swift */; };
 		CE2A48D01B1E74A800438A27 /* StudentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A48CF1B1E74A800438A27 /* StudentInformation.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE2834121B668BCB00A54467 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		CE2A48CB1B1E622400438A27 /* ParseClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseClient.swift; sourceTree = "<group>"; };
 		CE2A48CD1B1E6EFB00438A27 /* WebClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebClient.swift; sourceTree = "<group>"; };
 		CE2A48CF1B1E74A800438A27 /* StudentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentInformation.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				CEC994121B1CA4C20071B94E /* InformationPostingViewController.swift */,
 				CE9F65471B211334009CE313 /* NavigationBarMenu.swift */,
 				CE3C38B71B6528BE002A9CCD /* TabBarController.swift */,
+				CE2834121B668BCB00A54467 /* WebViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -298,6 +301,7 @@
 				CEC993EB1B1B7AF30071B94E /* AppDelegate.swift in Sources */,
 				CE9F65481B211334009CE313 /* NavigationBarMenu.swift in Sources */,
 				CEEFC6F21B2A55B2004A247B /* MapAndTableViewController.swift in Sources */,
+				CE2834131B668BCB00A54467 /* WebViewController.swift in Sources */,
 				CEEFC6FA1B352AFF004A247B /* TestingHelper.swift in Sources */,
 				CE2A48CC1B1E622400438A27 /* ParseClient.swift in Sources */,
 				CE2A48D01B1E74A800438A27 /* StudentInformation.swift in Sources */,

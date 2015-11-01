@@ -43,6 +43,8 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	private let defaultAddressText = "Mountain View, CA"
 	private let defaultUrlText = "www.udacity.com"
 	
+	var isMapShown = false
+	
 	//----------------------------------------------------------------------//
 	// ViewController methods
 	
@@ -63,16 +65,18 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		
 		// setup login indicator
 		self.indicator = sharedApp.createIndicator(targetView: self.view)
-		
 	}
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
 		// prepare user data
-		self.tempStudentInfo = self.sharedApp.userData != nil ? self.sharedApp.userData : nil
-		
-		updateLayout(isMapShown: false)
+		if !isMapShown {
+			self.tempStudentInfo = self.sharedApp.userData != nil ? self.sharedApp.userData : nil
+		} else {
+			putAMarkerOntheMap(tempStudentInfo!)
+		}
+		updateLayout(isMapShown: isMapShown)
 		keyboard.prepareToAppear()
 	}
 	
@@ -80,7 +84,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		super.viewWillDisappear(animated)
 		keyboard.prepareToDisappear()
 	}
-	
+
 	//----------------------------------------------------------------------//
 	// screen transition handlers
 	
@@ -91,12 +95,22 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		}
 	}
 	
-	private func dismiss() {
+	func dismiss() {
 		self.dismissViewControllerAnimated(true, completion: nil)
 	}
 	
 	//----------------------------------------------------------------------//
 	// UI layout switching
+	
+	/**
+	Set if InformationView should show an entered location on the map
+	
+	:param: sholdShowMap true: InformationView shold show the map on appearing its view, false: otherwise
+	:returns: none
+	*/
+	func shouldShowLocation(sholdShowMap: Bool){
+		self.isMapShown = sholdShowMap
+	}
 	
 	// update UI layout
 	private func updateLayout(#isMapShown: Bool) {
@@ -300,7 +314,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 			// update shared user data
 			sharedApp.userData = tempStudentInfo
 			
-			dismiss()
+			self.dismiss()
 		} else {
 			self.sharedApp.dispatch_async_main {
 				self.sharedApp.showSelectMessage(self, message: "Posting your information failed. Quit posting a location?") { OKAction in
@@ -315,11 +329,9 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	
 	func onMarkerTapped(student: StudentAnnotation?) {
 		// let users browse to the entered link when users tap the displaying annotation.
-		sharedApp.showSelectMessage(self, message: "Are you going to open the url? \(self.urlTextfield.text)") { OKAction in
-			// launch browser and direct it to the url
-			let url = self.urlTextfield.text
-			UIApplication.sharedApplication().openURL(NSURL(string:url)!)
-		}
+		let webViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+		webViewController.setUrlString(urlTextfield.text)
+		self.presentViewController(webViewController, animated: false, completion: nil)
 	}
 	
 	private func convertAddressToGeocode(addressString: String) {
