@@ -73,7 +73,7 @@ final class ParseClient {
 	:param: completionHandler A handler on the completion
 	:returns: An array of StudentInformation in the completion handler. The StudentInformation includes name, address, URL, location and objectId.
 	*/
-	func getStudentLocations(#limit: Int, skip: Int, completionHandler: (result: [StudentInformation]?, success: Bool, error: NSError?) -> Void) {
+	func getStudentLocations(limit limit: Int, skip: Int, completionHandler: (result: [StudentInformation]?, success: Bool, error: NSError?) -> Void) {
 		let httpClient = WebClient()
 		
 		var mutableParameters = [String : AnyObject]()
@@ -140,7 +140,7 @@ final class ParseClient {
 		
 		let jsonBody = createJSONBody(uniqueKey, student: student)
 		
-		println(jsonBody)
+		print(jsonBody)
 		
 		httpClient.sendRequest(request, jsonBody: jsonBody) { (result, success, downloadError) -> Void in
 			if !success {
@@ -154,7 +154,7 @@ final class ParseClient {
 			"objectId":"xxxyyyzzz"
 			}
 			*/
-			println(result)
+			print(result)
 			
 			if let objectId = result?.valueForKey(JSONResponseKeys.ObjectId) as? String {
 				completionHandler(resultString: objectId, success: true, error: nil)
@@ -247,7 +247,7 @@ final class ParseClient {
 			}
 			*/
 			if let resultList = result?.valueForKey(JSONResponseKeys.Results) as? [[String: AnyObject]] {
-				println(resultList)
+				print(resultList)
 				
 				// result data is empty (no location is registered)
 				let studentList = StudentInformation.getStudentInformationFromResults(resultList)

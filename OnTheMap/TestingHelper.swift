@@ -12,7 +12,7 @@ public class TestingHelper {
 	// WebClient class
 	public class func createURL(baseURL: String, method: String?, parameters: [String : AnyObject]? = [String : AnyObject]()) -> String{
 		let url = WebClient().createURL(baseURL, method: method, parameters: parameters)
-		return url.absoluteString!
+		return url.absoluteString
 	}
 	
 	// Udacity APIs

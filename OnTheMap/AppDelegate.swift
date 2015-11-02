@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var userData: StudentInformation?  // stored udacity user data
 	var students = StudentInformationArray() // stored student information as array in the model class
 	
+	
 	/**
 	Update shared student information (locations) from specified view controller.
 	
@@ -45,14 +46,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	:returns: none
 	*/
 	func updateStudentLocationsWithMultipleRequests(target: UIViewController?, handler: ([StudentInformation]?, Bool) -> Void ) {
-		println("update student locations.")
+		print("update student locations.")
 		
 		let limits = ParseClient.LimitPerRequest * 2 // more than the most recent 100 locations
 		let skip = 0
 		self.students.reset()
 		
 		updateStudentLocationsRecursively(limit: limits, skip: skip, trial: 0) { result, success, downloadError in
-			if let students = result {
+			if let _ = result { // valid result
 				self.students.sortByDate()
 				handler(self.students.array, true)
 			} else {
@@ -66,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	private static let maxHTTPRequestTrials = 10
 	
-	internal func updateStudentLocationsRecursively(#limit: Int, skip: Int, trial: Int, handler: ([StudentInformation]?, Bool, NSError?) -> Void ) {
+	internal func updateStudentLocationsRecursively(limit limit: Int, skip: Int, trial: Int, handler: ([StudentInformation]?, Bool, NSError?) -> Void ) {
 		let limitPerRequest = ParseClient.LimitPerRequest
 		
 		if limit <= 0 || // every student information has been obtained
@@ -121,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	:returns: Created alert view object
 	*/
 	func showAlertMessage(target: UIViewController?, message: String) -> UIView {
-		var alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+		let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
 		let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
 		alert.addAction(okAction)
 		
@@ -138,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	:returns: Created alert view object
 	*/
 	func showSelectMessage(target: UIViewController?, message: String, handler:((UIAlertAction!) -> Void)!) -> UIView {
-		var alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+		let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.Alert)
 		let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: handler)
 		let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
 		alert.addAction(okAction)

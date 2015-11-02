@@ -18,7 +18,7 @@ final class TabBarController:UITabBarController {
 		super.viewDidLoad()
 		
 		// setup customized tabbar items
-		let viewControllers = self.viewControllers as! [UIViewController]
+		let viewControllers = self.viewControllers! as [UIViewController]
 		let mapIcon = UIImage(named: "map")
 		viewControllers[0].tabBarItem = UITabBarItem(title: "Map", image: mapIcon, selectedImage: mapIcon)
 		let listIcon = UIImage(named: "list")

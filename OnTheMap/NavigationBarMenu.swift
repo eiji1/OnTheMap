@@ -55,7 +55,7 @@ final class NavigationBarMenu: UIViewController{
 		// locate the toolbar at the right top of navigation item bar.
 		targetViewController.navigationItem.rightBarButtonItem = toolbarButtonItem
 		
-		var logoutButtonItem = UIBarButtonItem(title: "logout", style: UIBarButtonItemStyle.Plain, target: self, action: "logout")
+		let logoutButtonItem = UIBarButtonItem(title: "logout", style: UIBarButtonItemStyle.Plain, target: self, action: "logout")
 		targetViewController.navigationItem.leftBarButtonItem = logoutButtonItem
 	}
 	
@@ -69,7 +69,7 @@ final class NavigationBarMenu: UIViewController{
 	:returns: none
 	*/
 	func refleshStudentInformation() {
-		println("refleshStudentInformation")
+		print("refleshStudentInformation")
 		delegate?.update(fromWebAPI: true)
 	}
 	
@@ -95,10 +95,10 @@ final class NavigationBarMenu: UIViewController{
 		UdacityClient.sharedInstance().logout { (result, success, error) -> Void in
 			if success {
 				if let sessionId = result {
-					println("success logout: result session id: \(sessionId)")
+					print("success logout: result session id: \(sessionId)")
 				}
 			} else {
-				println("logout failed.")
+				print("logout failed.")
 			}
 			// dismiss current view anyway
 			self.targetViewController.dismissViewControllerAnimated(false, completion: nil)

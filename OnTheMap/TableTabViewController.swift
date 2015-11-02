@@ -48,14 +48,14 @@ final class TableTabViewController: UIViewController, UITableViewDataSource, UIT
 	
 	// ask the cell for each row
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCellWithIdentifier("StudentInfoCell") as? UITableViewCell
+		let cell = tableView.dequeueReusableCellWithIdentifier("StudentInfoCell")! as UITableViewCell
 		
 		if let student = sharedApp.students.getData(indexPath.row) {
 			// each row shows the student's name
-			cell?.textLabel?.text = "\(student.firstName) \(student.lastName)"
-			cell?.imageView?.image = UIImage(named: "pin")
+			cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
+			cell.imageView?.image = UIImage(named: "pin")
 		}
-		return cell!
+		return cell
 	}
 	
 	// on tapping each row

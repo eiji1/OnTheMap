@@ -64,7 +64,7 @@ final class WebClient : NSObject{
 				urlVars += [key + "=" + "\(escapedValue!)"]
 			}
 			
-			return (!urlVars.isEmpty ? "?" : "") + join("&", urlVars)
+			return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
 		} else {
 			return ""
 		}
@@ -82,7 +82,7 @@ final class WebClient : NSObject{
 		let urlMethod = method == nil ? "" : "/" + method!
 		let urlString = baseURL + urlMethod + WebClient.escapedParameters(parameters)
 		let url = NSURL(string: urlString)!
-		println(urlString)
+		print(urlString)
 		return url
 	}
 	
@@ -100,9 +100,9 @@ final class WebClient : NSObject{
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 		if let httpHeaderFields = parameters {
 			for (key, value) in httpHeaderFields {
-				println(key)
-				println(value)
-				request.addValue(value as? String, forHTTPHeaderField: key)
+				print(key)
+				print(value)
+				request.addValue(value as! String, forHTTPHeaderField: key)
 			}
 		}
 		// set timeout interval
@@ -121,14 +121,15 @@ final class WebClient : NSObject{
 	*/
 	func sendRequest(request: NSMutableURLRequest, jsonBody: [String:AnyObject]?, completionHandler: CompletionHandlerWithResultData) -> NSURLSessionDataTask {
 
-		var jsonifyError: NSError? = nil
-
 		if let body = jsonBody {
-			println(body)
-			request.HTTPBody = NSJSONSerialization.dataWithJSONObject(body, options: nil, error: &jsonifyError)
-		}
-		if jsonifyError != nil {
-			println(jsonifyError)
+			print(body)
+			do {
+				request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(body, options: [])
+			} catch {
+				// jsonfy error
+				// let jsonifyError = CustomError.getError(CustomError.Code.JSONParseError)
+				return NSURLSessionDataTask()
+			}
 		}
 		
 		// define a task for the request and on the completion
@@ -144,7 +145,7 @@ final class WebClient : NSObject{
 					completionHandler(result: nil, success: false, error: downloadError)
 				}
 			} else {
-				self.parseJSONObject(data, completionHandler: completionHandler)
+				self.parseJSONObject(data!, completionHandler: completionHandler)
 			}
 		}
 		// do the task
@@ -174,16 +175,15 @@ final class WebClient : NSObject{
 	// parse JSON string and obtain the Foundation objects
 	private func parseJSONObject(data: NSData, completionHandler: CompletionHandlerWithResultData) {
 		// subset response data
-		var parsingError: NSError? = nil
 		let offset = self.startParsePos
 		let subSetData = data.subdataWithRange(NSMakeRange(offset, data.length - offset))
 		// parse objects to json format
-		let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(subSetData, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
-		if let error = parsingError {
+		do {
+			let parsedResult: AnyObject? = try NSJSONSerialization.JSONObjectWithData(subSetData, options: [NSJSONReadingOptions.AllowFragments])
+			completionHandler(result: parsedResult, success: true, error: nil)
+		} catch {
 			completionHandler(result: nil, success: false,
 				error: CustomError.getError(CustomError.Code.JSONParseError))
-		} else {
-			completionHandler(result: parsedResult, success: true, error: nil)
 		}
 	}
 	

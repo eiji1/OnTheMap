@@ -113,7 +113,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	}
 	
 	// update UI layout
-	private func updateLayout(#isMapShown: Bool) {
+	private func updateLayout(isMapShown isMapShown: Bool) {
 		// header
 		let headerViewColor = [true: UIColor.blueColor(), false: UIColor.lightGrayColor()]
 		headerView.backgroundColor = headerViewColor[isMapShown]
@@ -163,11 +163,11 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	
 	func textFieldDidEndEditing(textField: UITextField) {
 		if textField == urlTextfield {
-			tempStudentInfo?.mediaURL = textField.text
+			tempStudentInfo?.mediaURL = textField.text!
 			// update url string on the annotation
 			self.putAMarkerOntheMap(tempStudentInfo!)
 		} else if textField == addressTextField {
-			tempStudentInfo?.mapString = textField.text
+			tempStudentInfo?.mapString = textField.text!
 		}
 	}
 	
@@ -199,7 +199,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		if addressTextField.text == "" {
 			sharedApp.showAlertMessage(self, message: "Your address is empty.")
 		} else {
-			convertAddressToGeocode(addressTextField.text)
+			convertAddressToGeocode(addressTextField.text!)
 		}
 	}
 	
@@ -214,12 +214,12 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	*/
 	func postNewStudentInformation() {
 		if tempStudentInfo == nil {
-			println("no user data has been obtained from udacity.")
+			print("no user data has been obtained from udacity.")
 			return
 		}
-		tempStudentInfo?.mapString = addressTextField.text
-		tempStudentInfo?.mediaURL = urlTextfield.text
-		println(tempStudentInfo)
+		tempStudentInfo?.mapString = addressTextField.text!
+		tempStudentInfo?.mediaURL = urlTextfield.text!
+		print(tempStudentInfo)
 		
 		indicator.startAnimating()
 		
@@ -227,7 +227,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		if let uniqueKey = UdacityClient.sharedInstance().userId {
 			requestQueryingForALocation(uniqueKey)
 		} else {
-			println("pareparing for unique key has been failed.")
+			print("pareparing for unique key has been failed.")
 		}
 	}
 	
@@ -238,10 +238,10 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 				if let myLocations = result {
 					let latestLocation = myLocations[myLocations.count-1]
 					// check objectId is found in the current student list.
-					if let correspondingIndex = self.sharedApp.students.getIndex(latestLocation.objectId) {
+					if let _ = self.sharedApp.students.getIndex(latestLocation.objectId) {
 						// store object id
 						self.tempStudentInfo?.objectId = latestLocation.objectId
-						println(self.tempStudentInfo)
+						print(self.tempStudentInfo)
 						// modify last student information
 						self.requestPuttingALocation(uniqueKey, student: self.tempStudentInfo!)
 					} else { // not found
@@ -268,7 +268,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	private func requestPuttingALocation(uniqueKey: WebClient.UniqueKey, student: StudentInformation) {
 		ParseClient.sharedInstance().putAStudentLocation(uniqueKey, student: student) { (success, downloadError) -> Void in
 			if success {
-				println("putting student info succeeded.")
+				print("putting student info succeeded.")
 			}
 			self.onFinishPostingStudentLocation(success)
 		}
@@ -280,12 +280,12 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 			if success {
 				if let objectId = result {
 					self.tempStudentInfo?.objectId = objectId
-					println("set object id to the user information. \(objectId)")
+					print("set object id to the user information. \(objectId)")
 				}
 				// get student locations again because the total number has been increased.
 				self.sharedApp.updateStudentLocationsWithMultipleRequests(self) { result, success in
 					if success {
-						println("student info has been updated.")
+						print("student info has been updated.")
 					}
 				}
 			}
@@ -300,13 +300,12 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		}
 		
 		if success {
-			println("posting student info succeeded.")
+			print("posting student info succeeded.")
 			
 			// search my location from current student list
 			let myObjectId = tempStudentInfo?.objectId
 			
 			// update student information
-			var studentArray = sharedApp.students
 			if let index = sharedApp.students.getIndex(myObjectId) {
 				sharedApp.students.setObject(index, data: self.tempStudentInfo!)
 				sharedApp.students.selectObject(index)
@@ -330,7 +329,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	func onMarkerTapped(student: StudentAnnotation?) {
 		// let users browse to the entered link when users tap the displaying annotation.
 		let webViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
-		webViewController.setUrlString(urlTextfield.text)
+		webViewController.setUrlString(urlTextfield.text!)
 		self.presentViewController(webViewController, animated: false, completion: nil)
 	}
 	
@@ -344,31 +343,31 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 			self.indicator.stopAnimating()
 			
 			// check geocode result
-			var isGeocodeOK = true
-			if let error = geocodingError {
-				isGeocodeOK = false
+			var isGeocodingOK = true
+			if let _ = geocodingError {
+				isGeocodingOK = false
 			} else if placemarks == nil {
-				isGeocodeOK = false
-			} else if placemarks.count == 0 {
-				isGeocodeOK = false
-			}
-			if !isGeocodeOK {
-				self.sharedApp.dispatch_async_main {
-					self.sharedApp.showAlertMessage(self, message: "failed to geocode your address.")
-				}
-				return
+				isGeocodingOK = false
 			}
 			
-			if let placemark = placemarks?[0] as? CLPlacemark {
+			if let placemark = placemarks!.first {
 				// store the location, address string and media URL
-				self.tempStudentInfo?.coordinates = placemark.location.coordinate
+				self.tempStudentInfo?.coordinates = placemark.location!.coordinate
 				self.tempStudentInfo?.mapString = addressString
-				self.tempStudentInfo?.mediaURL = self.urlTextfield.text
+				self.tempStudentInfo?.mediaURL = self.urlTextfield.text!
 				
 				self.sharedApp.dispatch_async_main {
 					// show the location on the map
 					self.putAMarkerOntheMap(self.tempStudentInfo!)
 					self.updateLayout(isMapShown: true)
+				}
+			} else {
+				isGeocodingOK = false
+			}
+			
+			if !isGeocodingOK {
+				self.sharedApp.dispatch_async_main {
+					self.sharedApp.showAlertMessage(self, message: "failed to geocode your address.")
 				}
 			}
 		}

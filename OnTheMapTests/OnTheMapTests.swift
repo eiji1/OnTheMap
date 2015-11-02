@@ -44,14 +44,14 @@ class OnTheMapTests: XCTestCase {
 			if success {
 				let userId = TestingHelper.getUdacityUserId()
 				let sessionId = TestingHelper.getUdacityUserId()
-				println("login succeeded!:session:\(sessionId), userid:\(userId)")
+				print("login succeeded!:session:\(sessionId), userid:\(userId)")
 				expectation.fulfill()
 				
 				let expected = self.udacityUserId
 				XCTAssert(userId == expected, "Pass")
 				
 			} else {
-				println("login failed")
+				print("login failed")
 				XCTAssert(false, "failed")
 			}
 		}
@@ -62,13 +62,13 @@ class OnTheMapTests: XCTestCase {
 		TestingHelper.logoutUdacity() { result, success, error in
 			if success {
 				if let data = result {
-					println("success logout: result session id: \(data)")
+					print("success logout: result session id: \(data)")
 					expectation.fulfill()
 				} else {
 					XCTAssert(false, "failed")
 				}
 			} else {
-				println("login failed")
+				print("login failed")
 			}
 		}
 		self.waitForExpectationsWithTimeout(10.0, handler:nil)
@@ -94,7 +94,7 @@ class OnTheMapTests: XCTestCase {
 		let myError = NSError(domain: OnTheMapErrorDomain, code: code.rawValue, userInfo: userInfo)
 		
 		if myError.code == ErrorCode.DownloadError.rawValue {
-			println(myError)
+			print(myError)
 		}
 	}
 	
@@ -149,7 +149,7 @@ class OnTheMapTests: XCTestCase {
 	}
 	
 	func testGetStudentLocationsWithARequest() {
-		var expectation = expectationWithDescription("get sudent locations through multiple requests")
+		let expectation = expectationWithDescription("get sudent locations through multiple requests")
 		let limitPerRequest = TestingHelper.getLimitPerRequest()
 		TestingHelper.getStudentLocationsWithMultipleRequests(limitPerRequest-2, skip: 3) { (result, success, error) in
 			if let students = result {
@@ -165,7 +165,7 @@ class OnTheMapTests: XCTestCase {
 	}
 	
 	func testGetStudentLocationsWith2Requests() {
-		var expectation = expectationWithDescription("get sudent locations through a request")
+		let expectation = expectationWithDescription("get sudent locations through a request")
 		let limitPerRequest = TestingHelper.getLimitPerRequest()
 		TestingHelper.getStudentLocationsWithMultipleRequests(limitPerRequest+2, skip: 3) { (result, success, error) in
 			if let students = result {
@@ -182,7 +182,7 @@ class OnTheMapTests: XCTestCase {
 	
 	func testGetStudentLocationsWith3Requests() {
 		
-		var expectation = expectationWithDescription("get sudent locations through 3 requests")
+		let expectation = expectationWithDescription("get sudent locations through 3 requests")
 		let limitPerRequest = TestingHelper.getLimitPerRequest()
 		TestingHelper.getStudentLocationsWithMultipleRequests(limitPerRequest*2+2, skip: 13) { (result, success, error) in
 			if let students = result {
@@ -207,7 +207,7 @@ class OnTheMapTests: XCTestCase {
 	func testPostStudent() {
 		return // comment out here to activate this test case
 		
-		var expectation = expectationWithDescription("postStudent")
+		let expectation = expectationWithDescription("postStudent")
 		
 		let sample = ["firstName" : firstName,
 			"lastName" : lastName,
@@ -216,10 +216,10 @@ class OnTheMapTests: XCTestCase {
 			"longitude": longitude
 		]
 		
-		var student = StudentInformation(dictionary: sample as! [String : AnyObject])
+		let student = StudentInformation(dictionary: sample as! [String : AnyObject])
 		TestingHelper.postAStudentLocation(uniqueKey, student: student) { (result, success, error) -> Void in
 			if success {
-				println("result:\(result)")
+				print("result:\(result)")
 				expectation.fulfill()
 				XCTAssert(true, "Pass")
 			} else {
@@ -231,11 +231,11 @@ class OnTheMapTests: XCTestCase {
 	
 	func testQueryStudent() {
 
-		var expectation = expectationWithDescription("queryStudent")
+		let expectation = expectationWithDescription("queryStudent")
 		
 		TestingHelper.queryForAStudentLocation(uniqueKey) { (result, success, error) -> Void in
 			if success {
-				println("result:\(result)")
+				print("result:\(result)")
 				expectation.fulfill()
 				XCTAssert(true, "Pass")
 			} else {
@@ -249,7 +249,7 @@ class OnTheMapTests: XCTestCase {
 	// modify student information
 	func testPutStudentInformation() {
 		
-		var expectation = expectationWithDescription("putStudent")
+		let expectation = expectationWithDescription("putStudent")
 		
 		let sample = ["firstName" : firstName,
 			"lastName" : lastName,
@@ -259,7 +259,7 @@ class OnTheMapTests: XCTestCase {
 			"objectId": objectId
 		]
 		
-		var student = StudentInformation(dictionary: sample as! [String : AnyObject])
+		let student = StudentInformation(dictionary: sample as! [String : AnyObject])
 		
 		TestingHelper.putAStudentLocation(uniqueKey, student: student) { (success, error) -> Void in
 			if success {

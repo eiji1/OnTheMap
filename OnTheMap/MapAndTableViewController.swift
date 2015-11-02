@@ -57,13 +57,13 @@ final class MapAndTableTabViewController: UIViewController, UITableViewDataSourc
 	
 	// ask what cells are for each row
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCellWithIdentifier("StudentInfoCell") as? UITableViewCell
+		let cell = tableView.dequeueReusableCellWithIdentifier("StudentInfoCell")! as UITableViewCell
 		// create a table view cell
 		if let student = sharedApp.students.getData(indexPath.row) {
-			cell?.textLabel?.text = "\(student.firstName) \(student.lastName)"
-			cell?.imageView?.image = UIImage(named: "pin")
+			cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
+			cell.imageView?.image = UIImage(named: "pin")
 		}
-		return cell!
+		return cell
 	}
 	
 	// on selecting each row
@@ -117,7 +117,7 @@ final class MapAndTableTabViewController: UIViewController, UITableViewDataSourc
 	}
 	
 	private func putAMarkerOntheMap(student: StudentInformation) {
-		var marker = self.mapKitViewController?.createMarker(StudentAnnotation.Kind.NameAndURL, student: student)
+		let marker = self.mapKitViewController?.createMarker(StudentAnnotation.Kind.NameAndURL, student: student)
 		// add and select the new maker
 		self.mapKitViewController?.removeAllMarkers()
 		self.mapKitViewController?.addMarker(marker!)

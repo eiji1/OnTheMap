@@ -20,7 +20,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 	
 	private let defaultUsername = "ENTER_USER_NAME"
 	private let defaultPassword = "ENTER_PASSWORD"
-
+	
 	// helper classes
 	private var sharedApp : AppDelegate!
 	private var keyboard: KeyboardController!
@@ -104,7 +104,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 
 		// login udacity
 		let udacity = UdacityClient.sharedInstance()
-		udacity.login(username, password) { success, downloadError in
+		udacity.login(username!, password!) { success, downloadError in
 			if !success {
 				self.sharedApp.dispatch_async_main {
 					self.indicator.stopAnimating()
@@ -112,7 +112,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 				}
 			}
 			else {
-				println("get public user data")
+				print("get public user data")
 				self.getPublicUserDataFromUdacity()
 			}
 		}
@@ -127,7 +127,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 				self.indicator.stopAnimating()
 			}
 			if let student = result {
-				println("login udacity and getting student data succeeded. result:\(student)")
+				print("login udacity and getting student data succeeded. result:\(student)")
 				// set shared user data
 				self.sharedApp.userData = student
 				
@@ -137,7 +137,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 					self.presentViewController(tabViewController, animated: false, completion: nil)
 				}
 			} else {
-				println("getting student data failed")
+				print("getting student data failed")
 				self.sharedApp.dispatch_async_main {
 					self.onLoginFailed(error)
 				}

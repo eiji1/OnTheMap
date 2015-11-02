@@ -107,7 +107,7 @@ final class UdacityClient {
 				completionHandler(success: false, error: downloadError)
 				return
 			}
-			println(result)
+			print(result)
 
 			// session id
 			var gotSessionId = false
@@ -152,11 +152,11 @@ final class UdacityClient {
 		// prepare for http header field for delete method
 		var xsrfCookie: NSHTTPCookie? = nil
 		let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-		for cookie in sharedCookieStorage.cookies as! [NSHTTPCookie] {
+		for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie] {
 			if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
 		}
 		if let xsrfCookie = xsrfCookie {
-			httpHeaderField["X-XSRF-Token"] = xsrfCookie.value!
+			httpHeaderField["X-XSRF-Token"] = xsrfCookie.value
 		}
 
 		let request = httpClient.createRequest(url, method: WebClient.Method.DELETE, parameters: httpHeaderField)
@@ -201,11 +201,10 @@ final class UdacityClient {
 				return
 			}
 			// user data
-			var gotSessionId = false
 			if let userData = result?.valueForKey(JSONResponseKeys.User) as? WebClient.JSONBody {
-				println(userData)
-				var student = StudentInformation(dictionary: userData)
-				println(student)
+				print(userData)
+				let student = StudentInformation(dictionary: userData)
+				print(student)
 				completionHandler(result: student, error: nil)
 			} else {
 				completionHandler(result: nil, error: CustomError.getError(CustomError.Code.JSONParseError))

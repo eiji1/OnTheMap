@@ -26,7 +26,7 @@ protocol Updatable {
 /**
 Student information to store indivisual name, links and locations. Their locations are shown on the map and media URLs are listed on the table view.
 */
-public struct StudentInformation : Printable {
+public struct StudentInformation : CustomStringConvertible {
 	var firstName: String = ""
 	var lastName: String = ""
 	var mediaURL: String = ""
@@ -150,7 +150,7 @@ final class StudentInformationArray {
 	*/
 	func selectObject(index: Int) -> StudentInformation? {
 		currentIndex = index
-		println("index \(currentIndex) was selected.")
+		print("index \(currentIndex) was selected.")
 		return getData(index)
 	}
 	
@@ -161,6 +161,7 @@ final class StudentInformationArray {
 		if let validData = data {
 			if index < array_.count {
 				array_[index] = validData
+				currentIndex = index
 			}
 		}
 	}
@@ -185,7 +186,7 @@ final class StudentInformationArray {
 	}
 	
 	func sortByDate() {
-		array_.sort { (lhs, rhs) in return lhs.updatedDate > rhs.updatedDate }
+		array_.sortInPlace { (lhs, rhs) in return lhs.updatedDate > rhs.updatedDate }
 	}
 }
 

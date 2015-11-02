@@ -31,11 +31,11 @@ final class StudentAnnotation: NSObject, MKAnnotation {
 		super.init()
 	}
 	
-	var title: String {
+	var title: String? {
 		return name
 	}
 	
-	var subtitle: String {
+	var subtitle: String? {
 		return url
 	}
 }
@@ -59,9 +59,11 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 
 	// store the last selected location (to shared the same information among different map view controllers)
 	// example: 35.6897° N, 139.6922° E
-	private static var lastLocation = CLLocationCoordinate2DMake(35.6897,139.6922)
+	//private static var lastLocation = CLLocationCoordinate2DMake(35.6897,139.6922)
 	private static let DefaultScale = 20.0
-	private static var lastScale = DefaultScale
+	
+	var lastLocation = CLLocationCoordinate2DMake(35.6897,139.6922)
+	var lastScale = 20.0
 	
 	@IBOutlet weak var mapView: MKMapView!
 
@@ -85,8 +87,8 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 	
 	override func viewDidAppear(animated: Bool) {
 		super.viewWillAppear(animated)
-		moveToALocation(MapKitViewController.lastLocation, scale: MapKitViewController.lastScale)
-		
+		//moveToALocation(MapKitViewController.lastLocation, scale: MapKitViewController.lastScale)
+		moveToALocation(lastLocation, scale: lastScale)
 		// update student locations once to supress the total number of network connections
 		delegate?.update(fromWebAPI: onViewAppearedFirstTime)
 		if onViewAppearedFirstTime {
@@ -149,8 +151,6 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 				name: student.mapString,
 				url: student.mediaURL,
 				coordinates: student.coordinates)
-		default:
-			return nil
 		}
 	}
 	
@@ -200,21 +200,25 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 	:returns: none
 	*/
 	func selectMarker(marker: StudentAnnotation?) {
-		mapView.selectAnnotation(marker, animated: true)
+		mapView.selectAnnotation(marker!, animated: true)
 	}
 	
 	// go to the specified location
 	private func moveToALocation(location: CLLocationCoordinate2D?, scale: Double = MapKitViewController.DefaultScale) {
 		if let location = location {
 			// store latest input values
-			MapKitViewController.lastLocation = location
-			MapKitViewController.lastScale = scale
+			//MapKitViewController.lastLocation = location
+			//MapKitViewController.lastScale = scale
+			lastLocation = location
+			lastScale = scale
 			
 			// transit to the next location
 			let coordDelta = scale
 			let span = MKCoordinateSpanMake(coordDelta, coordDelta)
 			let region = MKCoordinateRegionMake(location, span)
-			UIView.animateWithDuration(2.5, delay: 0.0, options: .CurveEaseInOut | .AllowUserInteraction | .OverrideInheritedDuration,
+			//let animationOptions : UIViewAnimationOptions = [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.AllowUserInteraction, UIViewAnimationOptions.OverrideInheritedDuration]
+			let animationOptions : UIViewAnimationOptions = []//[UIViewAnimationOptions.AllowUserInteraction]
+			UIView.animateWithDuration(2.5, delay: 0.0, options: animationOptions,
 				animations: {
 					self.mapView.setCenterCoordinate(location, animated: true)
 					self.mapView.setRegion(region, animated: true);
@@ -226,7 +230,8 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 	// map view delegate
 
 	// render a marker
-	func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+	func mapView(mapView: MKMapView,
+		viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
 		if let annotation = annotation as? StudentAnnotation {
 			let identifier = "pin"
 			var view: MKPinAnnotationView
@@ -238,7 +243,7 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 				view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
 				view.canShowCallout = true
 				view.calloutOffset = CGPoint(x: -5, y: 5)
-				view.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIView
+				view.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
 			}
 			return view
 		}
@@ -246,8 +251,8 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 	}
 
 	// on marker tapped
-	func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!,
-		calloutAccessoryControlTapped control: UIControl!) {
+	func mapView(mapView: MKMapView, annotationView view: MKAnnotationView,
+		calloutAccessoryControlTapped control: UIControl) {
 			let student = view.annotation as! StudentAnnotation
 			markerTapHandler?(student)
 	}
