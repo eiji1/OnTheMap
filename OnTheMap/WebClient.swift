@@ -119,16 +119,15 @@ final class WebClient : NSObject{
 	:param: completionHandler callback on completed the request
 	:returns: none
 	*/
-	func sendRequest(request: NSMutableURLRequest, jsonBody: [String:AnyObject]?, completionHandler: CompletionHandlerWithResultData) -> NSURLSessionDataTask {
-
+	func sendRequest(request: NSMutableURLRequest, jsonBody: [String:AnyObject]?, completionHandler: CompletionHandlerWithResultData) -> NSURLSessionDataTask? {
+		
 		if let body = jsonBody {
-			print(body)
 			do {
 				request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(body, options: [])
 			} catch {
 				// jsonfy error
-				// let jsonifyError = CustomError.getError(CustomError.Code.JSONParseError)
-				return NSURLSessionDataTask()
+				completionHandler(result: nil, success: false, error: CustomError.getError(CustomError.Code.JSONIFYError))
+				return nil
 			}
 		}
 		

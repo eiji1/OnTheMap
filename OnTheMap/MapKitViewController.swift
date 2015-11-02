@@ -139,19 +139,22 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 	:param: method The kind of new annotaion
 	:returns: Created annotaion object
 	*/
-	func createMarker(method: StudentAnnotation.Kind, student: StudentInformation) -> StudentAnnotation? {
-		switch method {
-		case .NameAndURL:
-			return StudentAnnotation(
-				name: student.firstName + " " + student.lastName,
-				url: student.mediaURL,
-				coordinates: student.coordinates)
-		case .AddressAndURL:
-			return StudentAnnotation(
-				name: student.mapString,
-				url: student.mediaURL,
-				coordinates: student.coordinates)
+	func createMarker(method: StudentAnnotation.Kind, student: StudentInformation?) -> StudentAnnotation? {
+		if let student = student {
+			switch method {
+			case .NameAndURL:
+				return StudentAnnotation(
+					name: student.firstName + " " + student.lastName,
+					url: student.mediaURL,
+					coordinates: student.coordinates)
+			case .AddressAndURL:
+				return StudentAnnotation(
+					name: student.mapString,
+					url: student.mediaURL,
+					coordinates: student.coordinates)
+			}
 		}
+		return nil
 	}
 	
 	/**
@@ -207,8 +210,6 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 	private func moveToALocation(location: CLLocationCoordinate2D?, scale: Double = MapKitViewController.DefaultScale) {
 		if let location = location {
 			// store latest input values
-			//MapKitViewController.lastLocation = location
-			//MapKitViewController.lastScale = scale
 			lastLocation = location
 			lastScale = scale
 			
@@ -216,8 +217,7 @@ final class MapKitViewController: UIViewController, MKMapViewDelegate {
 			let coordDelta = scale
 			let span = MKCoordinateSpanMake(coordDelta, coordDelta)
 			let region = MKCoordinateRegionMake(location, span)
-			//let animationOptions : UIViewAnimationOptions = [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.AllowUserInteraction, UIViewAnimationOptions.OverrideInheritedDuration]
-			let animationOptions : UIViewAnimationOptions = []//[UIViewAnimationOptions.AllowUserInteraction]
+			let animationOptions : UIViewAnimationOptions = [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.AllowUserInteraction, UIViewAnimationOptions.OverrideInheritedDuration]
 			UIView.animateWithDuration(2.5, delay: 0.0, options: animationOptions,
 				animations: {
 					self.mapView.setCenterCoordinate(location, animated: true)

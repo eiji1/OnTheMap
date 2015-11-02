@@ -307,7 +307,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 			
 			// update student information
 			if let index = sharedApp.students.getIndex(myObjectId) {
-				sharedApp.students.setObject(index, data: self.tempStudentInfo!)
+				sharedApp.students.setObject(index, data: self.tempStudentInfo)
 				sharedApp.students.selectObject(index)
 			}
 			// update shared user data
@@ -340,6 +340,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		// geocode an address string
 		let geocoder = CLGeocoder()
 		geocoder.geocodeAddressString(addressString) { (placemarks, geocodingError) -> Void in
+			
 			self.indicator.stopAnimating()
 			
 			// check geocode result
@@ -358,7 +359,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 				
 				self.sharedApp.dispatch_async_main {
 					// show the location on the map
-					self.putAMarkerOntheMap(self.tempStudentInfo!)
+					self.putAMarkerOntheMap(self.tempStudentInfo)
 					self.updateLayout(isMapShown: true)
 				}
 			} else {
@@ -373,7 +374,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		}
 	}
 	
-	private func putAMarkerOntheMap(student: StudentInformation) {
+	private func putAMarkerOntheMap(student: StudentInformation?) {
 		let marker = self.mapKitViewController?.createMarker(StudentAnnotation.Kind.AddressAndURL, student: student)
 		self.mapKitViewController?.removeAllMarkers()
 		self.mapKitViewController?.addMarker(marker)

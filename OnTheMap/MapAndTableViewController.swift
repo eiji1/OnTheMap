@@ -57,7 +57,7 @@ final class MapAndTableTabViewController: UIViewController, UITableViewDataSourc
 	
 	// ask what cells are for each row
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCellWithIdentifier("StudentInfoCell")! as UITableViewCell
+		let cell = tableView.dequeueReusableCellWithIdentifier("StudentInfoCell", forIndexPath: indexPath) as UITableViewCell
 		// create a table view cell
 		if let student = sharedApp.students.getData(indexPath.row) {
 			cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
@@ -120,7 +120,7 @@ final class MapAndTableTabViewController: UIViewController, UITableViewDataSourc
 		let marker = self.mapKitViewController?.createMarker(StudentAnnotation.Kind.NameAndURL, student: student)
 		// add and select the new maker
 		self.mapKitViewController?.removeAllMarkers()
-		self.mapKitViewController?.addMarker(marker!)
+		self.mapKitViewController?.addMarker(marker)
 		self.mapKitViewController?.moveToMarker(marker)
 	}
 }

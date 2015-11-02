@@ -19,6 +19,7 @@ public class CustomError {
 	public enum Code: Int{
 		case NetworkError = 0
 		case ServerError
+		case JSONIFYError
 		case JSONParseError
 		case EmptyDataError
 	}
@@ -27,6 +28,7 @@ public class CustomError {
 	static let CustomErrorDescription = [
 		Code.NetworkError: "network connection failed",
 		Code.ServerError: "server error occurred",
+		Code.JSONIFYError: "object serialization with JSON failed",
 		Code.JSONParseError: "parsing JSON object failed",
 		Code.EmptyDataError: "obtained data is empty"
 	]
