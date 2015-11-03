@@ -32,7 +32,7 @@ public struct StudentInformation : CustomStringConvertible {
 	var mediaURL: String = ""
 	var mapString: String = ""
 	var coordinates = CLLocationCoordinate2D(latitude: 0,longitude: 0)
-	var updatedDate: String = ""
+	var updatedAt: String = ""
 	var objectId: String!
 
 	public init(dictionary: [String : AnyObject]) {
@@ -53,7 +53,7 @@ public struct StudentInformation : CustomStringConvertible {
 		lastName = (lastName == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.LastName) : lastName
 		mediaURL = (mediaURL == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.MediaURL) : mediaURL
 		mapString = (mapString == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.MapString) : mapString
-		updatedDate = (updatedDate == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.UpdatedAt) : updatedDate
+		updatedAt = (updatedAt == "") ? getValue(dictionary, ParseClient.JSONResponseKeys.UpdatedAt) : updatedAt
 		
 		// check keys only in Parse APIs
 		objectId = getValue(dictionary, ParseClient.JSONResponseKeys.ObjectId)
@@ -89,7 +89,7 @@ public struct StudentInformation : CustomStringConvertible {
 		str += "\(mediaURL), "
 		str += "\(mapString), "
 		str += "\(coordinates.latitude), \(coordinates.longitude), "
-		str += "\(updatedDate)"
+		str += "\(updatedAt)"
 		if objectId != nil {
 			str += ", objectId: \(objectId)"
 		}
@@ -186,7 +186,7 @@ final class StudentInformationArray {
 	}
 	
 	func sortByDate() {
-		array_.sortInPlace { (lhs, rhs) in return lhs.updatedDate > rhs.updatedDate }
+		array_.sortInPlace({$0.updatedAt > $1.updatedAt })
 	}
 }
 
