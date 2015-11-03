@@ -27,6 +27,8 @@ final class ParseClient {
 		// get a location
 		static let Limit = "limit"
 		static let Skip = "skip"
+		static let Order = "order"
+		
 		// query a location
 		static let Where = "where"
 	}
@@ -81,9 +83,12 @@ final class ParseClient {
 		if limit > 0 && limit <= ParseClient.LimitPerRequest {
 			mutableParameters[ParseClient.ParameterKeys.Limit] = limit
 			mutableParameters[ParseClient.ParameterKeys.Skip] = skip
+			mutableParameters[ParseClient.ParameterKeys.Order] = "-updatedAt"
 		}
 		
-		// sample url: https://api.parse.com/1/classes/StudentLocation?limit=100
+		// sample url: https://api.parse.com/1/classes/StudentLocation?limit=100&skip=20
+		//  to sort in order of most recent to the oldest items:
+		//  https://api.parse.com/1/classes/StudentLocation?order=-updatedAt
 		let url = httpClient.createURL(ParseClient.BaseSecuredUrl, method: nil, parameters: mutableParameters)
 		
 		let httpHeaderField = [
