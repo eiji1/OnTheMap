@@ -148,17 +148,23 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 	private func onLoginFailed(downloadError: NSError?) {
 		
 		// differentiates error messages between connection error and invalid user account
-		var errorMessage = "login failed: "
+		var errorNotifyingMessage = "Login failed: "
 		if let error = downloadError {
-			if WebClient.isTimeout(error) {
-				errorMessage += "unreachable network connection."
+			// is network connection OK?
+			if WebClient.isTimeout(error) ||
+			CustomError.isEqual(error, CustomError.Code.ServerError)
+			{
+				errorNotifyingMessage += "Unreachable network connection."
+			// wrong account?
+			} else if CustomError.isEqual(error, CustomError.Code.InvalidAccountError) {
+				errorNotifyingMessage += "Account not found or invalid credentials."
 			} else {
-				errorMessage += "invalid username or password."
+				errorNotifyingMessage += "Unknown error has occurred."
 			}
 		}
-		errorMessage += "\nare you sure to retry?"
+		errorNotifyingMessage += "\nAre you sure to retry?"
 		
-		let alertView = self.sharedApp.showSelectMessage(self, message: errorMessage) { OkAction in
+		let alertView = self.sharedApp.showSelectMessage(self, message: errorNotifyingMessage) { OkAction in
 			// offer an interface to retry login request
 			self.sharedApp.dispatch_async_globally {
 				self.signinUdacity()

@@ -20,6 +20,8 @@ final class UdacityClient {
 	
 	static let BaseSecuredUrl = "https://www.udacity.com/api"
 	static let JSONParseOffset = 5 // the first 5 letters should be skipped for parsing JSON object data.
+	// constant variables
+	static let LoginErrorStatus = 403
 	
 	struct Methods {
 		static let Session = "session"
@@ -51,6 +53,10 @@ final class UdacityClient {
 		static let Expiration = "expiration"
 		
 		static let User = "user"
+		
+		// error case
+		static let Error = "error"
+		static let Status = "status"
 		
 		// Getting public user data
 		static let LastName = "last_name"
@@ -108,6 +114,15 @@ final class UdacityClient {
 				return
 			}
 			print(result)
+
+			// check if the error status has returned
+			if let status = result?.valueForKey(JSONResponseKeys.Status) as? Int {
+				if status == UdacityClient.LoginErrorStatus {
+					let errorDescription = result?.valueForKey(JSONResponseKeys.Error) as? String
+						completionHandler(success: false, error: CustomError.getError(CustomError.Code.InvalidAccountError, description: errorDescription))
+					return
+				}
+			}
 
 			// session id
 			var gotSessionId = false
