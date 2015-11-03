@@ -174,7 +174,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 		}
 		
 		// notifies the user of login failure with UIView animations
-		AddShakingAmination(self.view)
+		AddShakingAnimation(self.view)
 		AddRotatingAnimation(self.usernameTextField)
 		AddRotatingAnimation(self.passwordTextField)
 		AddRotatingAnimation(self.loginButton)
@@ -193,7 +193,7 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 		}
 	}
 	
-	private func AddShakingAmination(targetView: UIView) {
+	private func AddShakingAnimation(targetView: UIView) {
 		let animation = CABasicAnimation(keyPath: "position")
 		animation.duration = 0.1
 		animation.repeatCount = 5
