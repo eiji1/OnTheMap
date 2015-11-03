@@ -13,9 +13,11 @@ LoginViewController controls a behavior on login Udacity and how this applicatio
 */
 final class LoginViewController: UIViewController, UITextFieldDelegate {
 	
+	
 	// views
 	@IBOutlet weak var usernameTextField: UITextField!
 	@IBOutlet weak var passwordTextField: UITextField!
+	@IBOutlet weak var loginButton: UIButton!
 	@IBOutlet weak var imageView: UIImageView!
 	
 	private let defaultUsername = "ENTER_USER_NAME"
@@ -171,7 +173,12 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 			}
 		}
 		
-		// notifies the user of login failure with UIView animation
+		// notifies the user of login failure with UIView animations
+		AddShakingAmination(self.view)
+		AddRotatingAnimation(self.usernameTextField)
+		AddRotatingAnimation(self.passwordTextField)
+		AddRotatingAnimation(self.loginButton)
+		
 		UIView.animateWithDuration(1.5,
 			animations: { () -> Void in
 				alertView.transform = CGAffineTransformMakeTranslation(0, -self.view.frame.height/4)
@@ -184,6 +191,27 @@ final class LoginViewController: UIViewController, UITextFieldDelegate {
 				},
 			completion: nil)
 		}
+	}
+	
+	private func AddShakingAmination(targetView: UIView) {
+		let animation = CABasicAnimation(keyPath: "position")
+		animation.duration = 0.1
+		animation.repeatCount = 5
+		animation.autoreverses = true
+		let shift :CGFloat = 10
+		animation.fromValue = NSValue(CGPoint: CGPointMake(self.view.center.x - shift, self.view.center.y))
+		animation.toValue = NSValue(CGPoint: CGPointMake(self.view.center.x + shift, self.view.center.y))
+		targetView.layer.addAnimation(animation, forKey: "position")
+	}
+	
+	private func AddRotatingAnimation(targetView: UIView) {
+		let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+		rotateAnimation.duration = 0.2
+		rotateAnimation.repeatCount = 1
+		rotateAnimation.autoreverses = true
+		rotateAnimation.fromValue = 0.0
+		rotateAnimation.toValue = 2*M_PI
+		targetView.layer.addAnimation(rotateAnimation, forKey: "rotate-layer")
 	}
 }
 

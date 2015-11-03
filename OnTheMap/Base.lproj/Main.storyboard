@@ -65,6 +65,7 @@
                     <navigationItem key="navigationItem" id="zFR-54-1yl"/>
                     <connections>
                         <outlet property="imageView" destination="T5E-6C-rni" id="EoA-oF-OMo"/>
+                        <outlet property="loginButton" destination="9QI-IL-2lW" id="4LM-yc-LZ0"/>
                         <outlet property="passwordTextField" destination="AqB-Gm-Q5N" id="d1F-Z5-CWB"/>
                         <outlet property="usernameTextField" destination="rFK-bo-HUD" id="udF-ZQ-XGL"/>
                     </connections>
@@ -474,11 +475,11 @@ studying?</string>
                         <viewControllerLayoutGuide type="bottom" id="Gbp-aR-3J5"/>
                     </layoutGuides>
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="pW6-MT-civ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="243"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hAW-MF-Lf9">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="243"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -504,6 +505,6 @@ studying?</string>
         <image name="map" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ot4-jG-2gM"/>
+        <segue reference="IPa-Q8-Uhs"/>
     </inferredMetricsTieBreakers>
 </document>
