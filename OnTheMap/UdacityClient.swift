@@ -167,8 +167,10 @@ final class UdacityClient {
 		// prepare for http header field for delete method
 		var xsrfCookie: NSHTTPCookie? = nil
 		let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-		for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie] {
-			if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+		if let cookies = sharedCookieStorage.cookies {
+			for cookie in cookies as [NSHTTPCookie] {
+				if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+			}
 		}
 		if let xsrfCookie = xsrfCookie {
 			httpHeaderField["X-XSRF-Token"] = xsrfCookie.value

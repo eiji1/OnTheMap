@@ -351,7 +351,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 				isGeocodingOK = false
 			}
 			
-			if let placemark = placemarks!.first {
+			if let placemark = placemarks?.first {
 				// store the location, address string and media URL
 				self.tempStudentInfo?.coordinates = placemark.location!.coordinate
 				self.tempStudentInfo?.mapString = addressString
