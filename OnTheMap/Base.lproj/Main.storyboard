@@ -344,11 +344,22 @@ studying?</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MSf-AJ-xO8">
+                                        <rect key="frame" x="246" y="120" width="95" height="30"/>
+                                        <state key="normal" title="Go to website">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="onOpenWebViewButtonPressed:" destination="ubt-PF-2sJ" eventType="touchUpInside" id="yy0-Bp-VID"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="MSf-AJ-xO8" firstAttribute="centerX" secondItem="qmN-zT-yja" secondAttribute="centerX" id="0Xp-Cf-l32"/>
                                     <constraint firstAttribute="centerX" secondItem="PtA-V8-OWc" secondAttribute="centerX" constant="23" id="fKf-gt-TFH"/>
                                     <constraint firstAttribute="centerX" secondItem="Ias-Ne-rOL" secondAttribute="centerX" constant="7" id="wwV-rj-ASR"/>
+                                    <constraint firstItem="MSf-AJ-xO8" firstAttribute="top" secondItem="Ias-Ne-rOL" secondAttribute="bottom" constant="20" id="y8S-6e-KnP"/>
                                 </constraints>
                             </view>
                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tgS-Sh-E4G">
@@ -421,6 +432,7 @@ studying?</string>
                         <outlet property="instructionLabel" destination="PtA-V8-OWc" id="Slr-Gn-hi8"/>
                         <outlet property="sendButton" destination="Jew-xk-nnx" id="I6A-i8-yYi"/>
                         <outlet property="urlTextfield" destination="Ias-Ne-rOL" id="KTQ-g9-Wdh"/>
+                        <outlet property="webViewButton" destination="MSf-AJ-xO8" id="hhE-JN-F8Z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mbb-x5-ORb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -475,11 +487,11 @@ studying?</string>
                         <viewControllerLayoutGuide type="bottom" id="Gbp-aR-3J5"/>
                     </layoutGuides>
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="pW6-MT-civ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="363"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hAW-MF-Lf9">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="363"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -505,6 +517,6 @@ studying?</string>
         <image name="map" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="IPa-Q8-Uhs"/>
+        <segue reference="0sx-cn-Xuf"/>
     </inferredMetricsTieBreakers>
 </document>

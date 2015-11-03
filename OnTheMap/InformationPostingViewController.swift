@@ -22,7 +22,8 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	@IBOutlet weak var headerView: UIView!
 	@IBOutlet weak var instructionLabel: UILabel!
 	@IBOutlet weak var urlTextfield: UITextField!
-
+	@IBOutlet weak var webViewButton: UIButton!
+	
 	// body part
 	@IBOutlet weak var bodyView: UIView!
 	@IBOutlet weak var addressTextField: UITextField!
@@ -120,6 +121,7 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		urlTextfield.hidden = !isMapShown
 		urlTextfield.backgroundColor = headerView.backgroundColor
 		instructionLabel.hidden = isMapShown
+		webViewButton.hidden = !isMapShown
 		// body
 		bodyView.backgroundColor = UIColor.blueColor()
 		addressTextField.hidden = isMapShown
@@ -137,11 +139,13 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 			headerView.backgroundColor = headerViewColor[!isMapShown]
 			footerView.backgroundColor = footerViewColor[!isMapShown]
 			urlTextfield.backgroundColor = headerView.backgroundColor
+			webViewButton.backgroundColor = headerView.backgroundColor
 			UIView.beginAnimations(nil ,context:nil)
 			UIView.setAnimationDuration(3)
 			footerView.backgroundColor = footerViewColor[isMapShown]
 			headerView.backgroundColor = headerViewColor[isMapShown]
 			urlTextfield.backgroundColor = headerView.backgroundColor
+			webViewButton.backgroundColor = headerView.backgroundColor
 			UIView.commitAnimations()
 		} else {
 			// show prompt that the user should enter a location.
@@ -201,6 +205,17 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 		} else {
 			convertAddressToGeocode(addressTextField.text!)
 		}
+	}
+	
+	@IBAction func onOpenWebViewButtonPressed(sender: AnyObject) {
+		if self.urlTextfield.text == "" {
+			sharedApp.showAlertMessage(self, message: "Your URL is empty.")
+		}
+		
+		// let users browse to the entered link on the WebView
+		let webViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+		webViewController.setUrlString(urlTextfield.text!)
+		self.presentViewController(webViewController, animated: false, completion: nil)
 	}
 	
 	//----------------------------------------------------------------------//
@@ -327,10 +342,12 @@ final class InformationPostingViewController: UIViewController, UITextFieldDeleg
 	// geocoding and map operations
 	
 	func onMarkerTapped(student: StudentAnnotation?) {
-		// let users browse to the entered link when users tap the displaying annotation.
-		let webViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
-		webViewController.setUrlString(urlTextfield.text!)
-		self.presentViewController(webViewController, animated: false, completion: nil)
+		if urlTextfield.text != "" {
+			// let users browse to the entered link when users tap the displaying annotation.
+			let webViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+			webViewController.setUrlString(urlTextfield.text!)
+			self.presentViewController(webViewController, animated: false, completion: nil)
+		}
 	}
 	
 	private func convertAddressToGeocode(addressString: String) {
